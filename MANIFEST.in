@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include emd_management *.css
+recursive-include emd_management *.csv
+recursive-include emd_management *.html
+recursive-include emd_management *.ico
+recursive-include emd_management *.js
+recursive-include emd_management *.json
+recursive-include emd_management *.md
+recursive-include emd_management *.png
+recursive-include emd_management *.py
+recursive-include emd_management *.svg
+recursive-include emd_management *.txt
+recursive-exclude emd_management *.pyc
