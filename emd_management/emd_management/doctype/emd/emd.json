@@ -43,7 +43,8 @@
   "contact_display",
   "contact_phone",
   "contact_mobile",
-  "contact_email"
+  "contact_email",
+  "amended_from"
  ],
  "fields": [
   {
@@ -71,9 +72,9 @@
   },
   {
    "fieldname": "deposit_account",
-   "fieldtype": "Select",
+   "fieldtype": "Link",
    "label": "Deposit Account",
-   "options": "EMD Receivable - EIE\nSD Receivable - EIE\nEMD Receivable - VIPL\nSD Receivable - VIPL"
+   "options": "Account"
   },
   {
    "fieldname": "bank_account",
@@ -281,11 +282,20 @@
    "fieldtype": "Link",
    "label": "Cost Center",
    "options": "Cost Center"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "EMD",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-30 15:37:37.075740",
+ "modified": "2023-03-30 16:15:01.747335",
  "modified_by": "Administrator",
  "module": "Emd Management",
  "name": "EMD",
