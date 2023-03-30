@@ -15,6 +15,7 @@
   "amount",
   "extra_charges",
   "expense_account",
+  "cost_center",
   "reference_num",
   "returned",
   "cancel_return",
@@ -42,9 +43,7 @@
   "contact_display",
   "contact_phone",
   "contact_mobile",
-  "contact_email",
-  "amended_from",
-  "amended_from"
+  "contact_email"
  ],
  "fields": [
   {
@@ -278,27 +277,15 @@
    "read_only": 1
   },
   {
-   "fieldname": "amended_from",
+   "fieldname": "cost_center",
    "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "EMD",
-   "print_hide": 1,
-   "read_only": 1
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "EMD",
-   "print_hide": 1,
-   "read_only": 1
+   "label": "Cost Center",
+   "options": "Cost Center"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-29 17:06:25.365483",
+ "modified": "2023-03-30 15:37:37.075740",
  "modified_by": "Administrator",
  "module": "Emd Management",
  "name": "EMD",
