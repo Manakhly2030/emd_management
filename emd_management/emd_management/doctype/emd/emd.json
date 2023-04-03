@@ -95,6 +95,7 @@
    "options": "currency"
   },
   {
+   "depends_on": "eval:doc.is_opening != \"Yes\"",
    "fieldname": "expense_account",
    "fieldtype": "Link",
    "label": "Expense Account",
@@ -295,7 +296,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-03-30 16:15:01.747335",
+ "modified": "2023-04-03 13:48:48.806463",
  "modified_by": "Administrator",
  "module": "Emd Management",
  "name": "EMD",

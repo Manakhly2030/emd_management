@@ -10,6 +10,38 @@ frappe.ui.form.on('EMD', {
 				}
 			};
 		});
+		frm.set_query('deposit_account', function(doc) {
+			return {
+				filters: {
+					"is_group": 0,
+				
+				}
+			};
+		});
+		frm.set_query('bank_account', function(doc) {
+			return {
+				filters: {
+					"is_group": 0,
+				
+				}
+			};
+		});
+		frm.set_query('return_account', function(doc) {
+			return {
+				filters: {
+					"is_group": 0,
+				
+				}
+			};
+		});
+		frm.set_query('interest_account', function(doc) {
+			return {
+				filters: {
+					"is_group": 0,
+				
+				}
+			};
+		});
 
 		if (frm.doc.return_journal_entry) {
 			cur_frm.set_df_property("return_account", "read_only", 1);

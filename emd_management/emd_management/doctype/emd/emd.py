@@ -14,10 +14,8 @@ class EMD(Document):
         jv.voucher_type = "EMD Entry"
         jv.company = self.company
         abbr = frappe.db.get_value("Company", self.company, 'abbr')
-        if jv.company == "EIE Instruments Pvt. Ltd.":
-            jv.naming_series = "EPL/EMDJV/"
-        else:
-            jv.naming_series = "VPL/EMDJV/"
+        naming_series = f"{abbr}/EMDJV/"
+        jv.naming_series = naming_series
         jv.cheque_no = self.reference_num
         jv.cheque_date = self.reference_date
         jv.append('accounts', {
@@ -68,11 +66,8 @@ class EMD(Document):
             jv.company = self.company
             
             abbr = frappe.db.get_value("Company", self.company, 'abbr')
-            
-            if jv.company == "EIE Instruments Pvt. Ltd." :
-                jv.naming_series = "EPL/EMDJV/"
-            else:
-                jv.naming_series = "VPL/EMDJV/"
+            naming_series = f"{abbr}/EMDJV/"
+            jv.naming_series = naming_series
             jv.cheque_no = self.reference_num
             jv.cheque_date = self.reference_date
             
