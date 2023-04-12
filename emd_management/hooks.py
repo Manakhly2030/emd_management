@@ -107,6 +107,10 @@ doctype_js = {"Journal Entry": "public/js/journal_entry.js"}
 doc_events = {
 	
 	# "EMD": {"on_update_after_submit": "emd_management.emd_management.doctype.emd.emd.on_update_after_submit"},
+	"Journal Entry":
+	{
+		"on_cancel": "emd_management.emd_management.doc_events.journal_entry.on_cancel"
+	}
 	
 }
 

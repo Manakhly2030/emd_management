@@ -201,3 +201,6 @@ def set_status(name, status):
 def change_status_on_due(self):
     if self.due_date > str(getdate()):
         self.status ="Due"
+
+
+    
