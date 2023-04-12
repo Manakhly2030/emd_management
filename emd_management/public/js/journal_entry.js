@@ -17,6 +17,6 @@ frappe.ui.form.on('Journal Entry', {
             'Deferred Revenue',
             'Deferred Expense',
             'EMD Entry',])
-        
+            
     }
 })
