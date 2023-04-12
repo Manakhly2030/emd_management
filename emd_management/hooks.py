@@ -30,7 +30,7 @@ app_license = "MIT"
 
 # include js in doctype views
 # doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
+doctype_list_js = {"EMD" : "emd_management/emd_management/doctype/emd/emd_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
 doctype_js = {"Journal Entry": "public/js/journal_entry.js"}
@@ -104,13 +104,11 @@ doctype_js = {"Journal Entry": "public/js/journal_entry.js"}
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	
+	# "EMD": {"on_update_after_submit": "emd_management.emd_management.doctype.emd.emd.on_update_after_submit"},
+	
+}
 
 # Scheduled Tasks
 # ---------------
@@ -132,6 +130,14 @@ doctype_js = {"Journal Entry": "public/js/journal_entry.js"}
 #		"emd_management.tasks.monthly"
 #	],
 # }
+scheduler_events = {
+	"weekly": [
+		"emd_management.emd_management.doctype.emd.emd.send_emails"
+	],
+	"daily": [
+		"emd_management.emd_management.doctype.emd.emd.change_status_on_due"
+	]
+}
 
 # Testing
 # -------

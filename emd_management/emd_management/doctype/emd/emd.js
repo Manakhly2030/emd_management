@@ -56,7 +56,7 @@ frappe.ui.form.on('EMD', {
 			cur_frm.set_df_property("return_date", "read_only", 0);
 		}
 		if(!frm.doc.__islocal && frm.doc.return_journal_entry){
-			frm.set_df_property('returned', 'read_only',1);
+			// frm.set_df_property('returned', 'read_only',1);
 			frm.set_df_property('return_account', 'read_only',1);
 			frm.set_df_property('return_date', 'read_only',1);
 		}
@@ -96,6 +96,21 @@ frappe.ui.form.on('EMD', {
 				}
 			});
 		}
+	},
+
+	email_template:function(frm){
+		frappe.call({
+			method:"frappe.email.doctype.email_template.email_template.get_email_template",
+			args:{
+				template_name:frm.doc.email_template,
+				doc:frm.doc
+			},
+			callback: function(r){
+				
+				frm.set_value("invitation_message", r.message.message)
+
+			}
+		})
 	},
 
 	

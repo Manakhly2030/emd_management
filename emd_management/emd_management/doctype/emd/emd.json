@@ -18,8 +18,11 @@
   "cost_center",
   "reference_num",
   "returned",
+  "forfeited",
+  "write_off_account",
   "cancel_return",
   "return_account",
+  "return_date",
   "interest_amount",
   "interest_account",
   "column_break_5",
@@ -31,8 +34,12 @@
   "payment_mode",
   "reference_date",
   "is_opening",
-  "dont_send_email",
-  "return_date",
+  "send_weekly_reminder",
+  "description_section",
+  "cc_to",
+  "receipient",
+  "email_template",
+  "invitation_message",
   "address_and_contact",
   "address",
   "address_display",
@@ -44,7 +51,8 @@
   "contact_phone",
   "contact_mobile",
   "contact_email",
-  "amended_from"
+  "amended_from",
+  "status"
  ],
  "fields": [
   {
@@ -60,6 +68,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Customer",
+   "no_copy": 1,
    "options": "Customer",
    "reqd": 1
   },
@@ -74,18 +83,23 @@
    "fieldname": "deposit_account",
    "fieldtype": "Link",
    "label": "Deposit Account",
+   "no_copy": 1,
    "options": "Account"
   },
   {
    "fieldname": "bank_account",
    "fieldtype": "Link",
    "label": "Bank Account",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
+   "no_copy": 1,
    "options": "Account"
   },
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
    "label": "Amount",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
+   "no_copy": 1,
    "options": "currency"
   },
   {
@@ -104,11 +118,14 @@
   {
    "fieldname": "reference_num",
    "fieldtype": "Data",
-   "label": "Reference Num"
+   "label": "Reference Num",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
+   "no_copy": 1
   },
   {
    "allow_on_submit": 1,
    "default": "0",
+   "depends_on": "eval:doc.docstatus == 1;",
    "fieldname": "returned",
    "fieldtype": "Check",
    "label": "Returned"
@@ -157,7 +174,9 @@
   {
    "fieldname": "due_date",
    "fieldtype": "Date",
-   "label": "Due Date"
+   "label": "Due Date",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
+   "no_copy": 1
   },
   {
    "fieldname": "company",
@@ -168,17 +187,23 @@
   {
    "fieldname": "tender_name",
    "fieldtype": "Data",
-   "label": "Tender Name"
+   "label": "Tender Name",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
+   "no_copy": 1
   },
   {
    "fieldname": "tender_no",
    "fieldtype": "Data",
-   "label": "Tender No"
+   "label": "Tender No",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
+   "no_copy": 1
   },
   {
    "fieldname": "payment_mode",
    "fieldtype": "Data",
-   "label": "Payment Mode"
+   "label": "Payment Mode",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
+   "no_copy": 1
   },
   {
    "default": "Today",
@@ -191,13 +216,6 @@
    "fieldtype": "Select",
    "label": "Is Opening",
    "options": "\nYes\nNo"
-  },
-  {
-   "allow_on_submit": 1,
-   "default": "0",
-   "fieldname": "dont_send_email",
-   "fieldtype": "Check",
-   "label": "Don't Send Email"
   },
   {
    "allow_on_submit": 1,
@@ -292,11 +310,73 @@
    "options": "EMD",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "send_weekly_reminder",
+   "fieldtype": "Check",
+   "label": "Send Weekly Reminder"
+  },
+  {
+   "depends_on": "eval:doc.send_weekly_reminder==1",
+   "fieldname": "description_section",
+   "fieldtype": "Section Break",
+   "label": "Reminder Setup"
+  },
+  {
+   "fieldname": "cc_to",
+   "fieldtype": "Data",
+   "label": "CC To"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "email_template",
+   "fieldtype": "Link",
+   "label": "Email Template",
+   "options": "Email Template"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "invitation_message",
+   "fieldtype": "Text Editor",
+   "label": "Reminder Message"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "receipient",
+   "fieldtype": "Data",
+   "label": "Receipient",
+   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Paid\nDue\nRefunded\nForfeited",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "0",
+   "fieldname": "forfeited",
+   "fieldtype": "Check",
+   "label": "Forfeited"
+  },
+  {
+   "default": "Write Off - WPL",
+   "depends_on": "eval:doc.forfeited==1",
+   "fieldname": "write_off_account",
+   "fieldtype": "Link",
+   "label": "Write Off Account",
+   "options": "Account"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-03 13:48:48.806463",
+ "modified": "2023-04-12 00:33:57.028567",
  "modified_by": "Administrator",
  "module": "Emd Management",
  "name": "EMD",
