@@ -37,8 +37,8 @@
   "is_opening",
   "send_weekly_reminder",
   "description_section",
-  "cc_to",
   "receipient",
+  "cc_to",
   "email_template",
   "invitation_message",
   "address_and_contact",
@@ -353,13 +353,6 @@
   },
   {
    "allow_on_submit": 1,
-   "fieldname": "email_template",
-   "fieldtype": "Link",
-   "label": "Email Template",
-   "options": "Email Template"
-  },
-  {
-   "allow_on_submit": 1,
    "fieldname": "invitation_message",
    "fieldtype": "Text Editor",
    "label": "Reminder Message"
@@ -395,11 +388,18 @@
    "no_copy": 1,
    "options": "Journal Entry",
    "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "email_template",
+   "fieldtype": "Link",
+   "label": "Email Template",
+   "options": "Email Template"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-14 02:57:18.078433",
+ "modified": "2023-04-14 04:51:15.770280",
  "modified_by": "Administrator",
  "module": "Emd Management",
  "name": "EMD",
