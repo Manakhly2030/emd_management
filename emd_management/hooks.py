@@ -110,7 +110,12 @@ doc_events = {
 	"Journal Entry":
 	{
 		"on_cancel": "emd_management.emd_management.doc_events.journal_entry.on_cancel"
+	},
+	"EMD":
+	{
+		"validate":"emd_management.emd_management.doctype.emd.emd.validate"
 	}
+	
 	
 }
 

@@ -7,16 +7,23 @@ from frappe.model.document import Document
 from frappe.utils import flt
 from frappe.utils.background_jobs import enqueue
 from erpnext.accounts.utils import get_fiscal_year, now , getdate
-
+import json
 
 
 class EMD(Document):  
     def set_status(self):
-        if not self.returned and not self.forfeited:
-            self.status = "Paid"
-        current_date = now()
-        if self.due_date > str(getdate()):
-            self.status ="Due"
+        if not self.bank_account and self.is_opening=="No":
+            frappe.throw("Bank Account is Mandatory")
+        if not self.due_date:
+            frappe.throw("Due Date is Mandatory.")
+            if not self.returned and not self.forfeited and not (self.due_date < str(getdate())):
+                self.db_set("status", "Paid")
+                self.status = "Paid"
+            else:
+                self.db_set("status", "Due")
+                self.status = "Due"
+        # if self.due_date < str(getdate()):
+        #     self.status ="Due"
         # if self.forfeited:
         #     self.status = "Forfeited"
 
@@ -42,21 +49,23 @@ class EMD(Document):
             jv.append('accounts', {
             'account': self.expense_account,
             'debit_in_account_currency': self.extra_charges,
-            'cost_center': 'Main - ' + abbr
+            'cost_center': self.cost_center
         })
         if self.is_opening == "Yes":
+            # self.db_set("bank_account", None)
             jv.append('accounts', {
                 'account': "Temporary Opening - " + abbr,
                 'credit_in_account_currency': flt(self.amount),
-                'cost_center': 'Main - ' + abbr
+                'cost_center': self.cost_center
             })
             jv.is_opening = "Yes"
         else:
             jv.append('accounts', {
                 'account': self.bank_account,
                 'credit_in_account_currency': flt(self.amount + self.extra_charges),
-                'cost_center': 'Main - ' + abbr
+                'cost_center': self.cost_center
             })
+        
         jv.save()
         self.db_set('journal_entry', jv.name)
         jv.submit()
@@ -66,12 +75,23 @@ class EMD(Document):
     def cancel_return(self):
         if self.return_journal_entry:
             jv = frappe.get_doc("Journal Entry", self.return_journal_entry)
-            self.returned = 0
+            self.db_set('returned', 0)
             self.return_account = None
             self.return_date = None
             self.db_set('return_journal_entry', None)
             jv.cancel()
+            self.db_set("status", "Paid")
         
+    @frappe.whitelist()
+    def cancel_forfeited(self):
+        if self.return_forfeited_entry:
+            jv = frappe.get_doc("Journal Entry", self.return_forfeited_entry)
+            self.db_set('forfeited', 0)
+            self.write_off_account = None
+            self.db_set('return_forfeited_entry', None)
+            jv.cancel()
+            self.db_set("status", "Paid")
+
     def on_update_after_submit(self):
         if self.returned == 1 and not self.return_journal_entry:
             jv = frappe.new_doc("Journal Entry")
@@ -131,20 +151,26 @@ class EMD(Document):
             jv.naming_series = naming_series
             jv.cheque_no = self.reference_num
             jv.cheque_date = self.reference_date
+            
         
             jv.append('accounts', {
             'account': self.deposit_account,
             'party_type': 'Customer',
             'party': self.customer,
-            'credit_in_account_currency': self.amount
+            'credit_in_account_currency': self.amount,
+            'cost_center': self.cost_center
+           
             }) 
             jv.append('accounts', {
             'account': self.write_off_account,
-            'debit_in_account_currency': self.amount
+            'debit_in_account_currency': self.amount,
+             'cost_center': self.cost_center
             })
             
             jv.save()
             # self.db_set('return_journal_entry', jv.name)
+            self.db_set('return_forfeited_entry', jv.name)
+
             jv.submit()
             self.db_set("status", "Forfeited")
         elif self.returned == 1:
@@ -199,8 +225,36 @@ def set_status(name, status):
 	st.save()
         
 def change_status_on_due(self):
-    if self.due_date > str(getdate()):
+    if self.due_date < str(getdate()):
         self.status ="Due"
 
 
+
+def validate(self,method):
+    if self.is_opening=="Yes":
+        self.extra_charges = 0.0
+        self.expense_account = None
+
+
     
+@frappe.whitelist()
+def cancel_return(self):
+    if self.return_journal_entry:
+        jv = frappe.get_doc("Journal Entry", self.return_journal_entry)
+        jv.cancel()
+        self.db_set({'returned', 0})
+        self.db_set("return_account", 0)
+        self.db_set("return_date", None) 
+        self.db_set('return_journal_entry', None)
+        self.db_set("status", "Paid")
+
+@frappe.whitelist()
+def cancel_forfeited(self):
+    if self.return_forfeited_entry:
+        jv = frappe.get_doc("Journal Entry", self.return_forfeited_entry)
+        jv.cancel()
+        self.db_set({'forfeited', 0})
+        self.db_set("write_off_account", 0)
+        self.db_set("return_date", None) 
+        self.db_set('return_forfeited_entry', None)
+        self.db_set("status", "Paid")

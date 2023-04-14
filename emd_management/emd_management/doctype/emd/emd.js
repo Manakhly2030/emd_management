@@ -2,6 +2,25 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('EMD', {
+	cancel_return: function(frm){
+		console.log("Called")
+		frm.call({
+			doc: frm.doc,
+			method: "cancel_return",
+			callback: () => {
+				window.location.reload();
+			}
+		})
+	},
+	cancel_forfeited: function(frm){
+		frm.call({
+			doc: frm.doc,
+			method: "cancel_forfeited",
+			callback: () => {
+				window.location.reload();
+			}
+		})
+	},
 	refresh: function(frm) {
 		frm.set_query('customer', function(doc) {
 			return {
@@ -10,39 +29,39 @@ frappe.ui.form.on('EMD', {
 				}
 			};
 		});
-		frm.set_query('deposit_account', function(doc) {
-			return {
-				filters: {
-					"is_group": 0,
+		// frm.set_query('deposit_account', function(doc) {
+		// 	return {
+		// 		filters: {
+		// 			"is_group": 0,
 				
-				}
-			};
-		});
-		frm.set_query('bank_account', function(doc) {
-			return {
-				filters: {
-					"is_group": 0,
+		// 		}
+		// 	};
+		// });
+		// frm.set_query('bank_account', function(doc) {
+		// 	return {
+		// 		filters: {
+		// 			"is_group": 0,
 				
-				}
-			};
-		});
-		frm.set_query('return_account', function(doc) {
-			return {
-				filters: {
-					"is_group": 0,
+		// 		}
+		// 	};
+		// });
+		// frm.set_query('return_account', function(doc) {
+		// 	return {
+		// 		filters: {
+		// 			"is_group": 0,
 				
-				}
-			};
-		});
-		frm.set_query('interest_account', function(doc) {
-			return {
-				filters: {
-					"is_group": 0,
+		// 		}
+		// 	};
+		// });
+		// frm.set_query('interest_account', function(doc) {
+		// 	return {
+		// 		filters: {
+		// 			"is_group": 0,
 				
-				}
-			};
-		});
-
+		// 		}
+		// 	};
+		// });
+		
 		if (frm.doc.return_journal_entry) {
 			cur_frm.set_df_property("return_account", "read_only", 1);
 			cur_frm.set_df_property("interest_amount", "read_only", 1);
@@ -60,6 +79,22 @@ frappe.ui.form.on('EMD', {
 			frm.set_df_property('return_account', 'read_only',1);
 			frm.set_df_property('return_date', 'read_only',1);
 		}
+		if(frm.doc.forfeited == 1){
+			cur_frm.set_df_property("returned", "hidden", 1);
+		}
+		if(frm.doc.returned == 1){
+			cur_frm.set_df_property("forfeited", "hidden", 1);
+		}
+		if(frm.doc.status == "Forfeited"){
+			cur_frm.set_df_property("forfeited", "read_only", 1);
+		}
+		if(frm.doc.status == "Refunded"){
+			cur_frm.set_df_property("returned", "read_only", 1);
+		}
+		if(frm.doc.is_opening == "Yes"){
+			cur_frm.set_df_property("bank_account", "hidden", 1);
+		}
+		
 	},
 
 	customer:function(frm){
@@ -82,6 +117,18 @@ frappe.ui.form.on('EMD', {
 				
 		})
 	},
+
+	forfeited:function(frm){
+		frappe.db.get_value("Company", frm.doc.company, 'abbr', function(r) {
+			if(r.abbr){
+				cur_frm.set_value("write_off_account", "Write Off - " + r.abbr)
+			}
+		})
+		
+	
+	},
+
+
 
 	address: function(frm){
 		if(cur_frm.doc.address) {
@@ -138,10 +185,30 @@ cur_frm.fields_dict.bank_account.get_query = function(doc) {
 return {
 	filters: {
 		"account_type": "Bank",
-		"company": doc.company
+		"company": doc.company,
+		"is_group": 0
 	}
 }
 };
+
+cur_frm.fields_dict.cost_center.get_query = function(doc) {
+	return {
+		filters: {
+			"company": doc.company
+		}
+	}
+	};
+
+
+
+cur_frm.fields_dict.deposit_account.get_query = function(doc) {
+	return {
+		filters: {
+			
+			"company": doc.company
+		}
+	}
+	};
 
 cur_frm.fields_dict.return_account.get_query = function(doc) {
 return {
