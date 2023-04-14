@@ -2,6 +2,12 @@
 // For license information, please see license.txt
 
 frappe.ui.form.on('EMD', {
+	posting_date: function(frm){
+		cur_frm.set_value("reference_date", frm.doc.posting_date)
+	},
+	onload: function(frm){
+		cur_frm.set_value("reference_date", frm.doc.posting_date)
+	},
 	cancel_return: function(frm){
 		console.log("Called")
 		frm.call({

@@ -16,12 +16,13 @@ class EMD(Document):
             frappe.throw("Bank Account is Mandatory")
         if not self.due_date:
             frappe.throw("Due Date is Mandatory.")
-            if not self.returned and not self.forfeited and not (self.due_date < str(getdate())):
-                self.db_set("status", "Paid")
-                self.status = "Paid"
-            else:
-                self.db_set("status", "Due")
-                self.status = "Due"
+
+        if not self.returned and not self.forfeited and not (self.due_date < str(getdate())):
+            self.db_set("status", "Paid")
+            self.status = "Paid"
+        else:
+            self.db_set("status", "Due")
+            self.status = "Due"
         # if self.due_date < str(getdate()):
         #     self.status ="Due"
         # if self.forfeited:
