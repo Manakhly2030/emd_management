@@ -216,3 +216,11 @@ scheduler_events = {
 # auth_hooks = [
 #	"emd_management.auth.validate"
 # ]
+
+
+fixtures = [
+       {
+         "dt": "Property Setter", 
+         "filters":[["name", "in", ['EMD-naming_series-options','EMD-cost_center-fetch_from', 'EMD-write_off_account-allow_on_submit', 'EMD-bank_account-depends_on', 'EMD-cancel_forfeited-depends_on', 'EMD-cost_center-fetch_if_empty', 'EMD-reference_date-default', 'Journal Entry-voucher_type-options']]]
+      },
+]
