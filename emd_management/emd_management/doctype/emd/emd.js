@@ -8,8 +8,10 @@ frappe.ui.form.on('EMD', {
 	onload: function(frm){
 		cur_frm.set_value("reference_date", frm.doc.posting_date)
 	},
+	send_weekly_reminder: function(frm){
+		cur_frm.set_value("receipient", frm.doc.contact_email)
+	},
 	cancel_return: function(frm){
-		console.log("Called")
 		frm.call({
 			doc: frm.doc,
 			method: "cancel_return",
@@ -144,8 +146,9 @@ frappe.ui.form.on('EMD', {
 					"address_dict": frm.doc.address
 				},
 				callback: function(r) {
-					if(r.message)
+					if (r.message) {
 						frm.set_value("address_display", r.message);
+						}
 				}
 			});
 		}

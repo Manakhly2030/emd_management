@@ -89,7 +89,7 @@
    "options": "Account"
   },
   {
-   "depends_on": "eval:doc.is_opening == \"Yes\"",
+   "depends_on": "eval:doc.is_opening == \"No\"",
    "fieldname": "bank_account",
    "fieldtype": "Link",
    "label": "Bank Account",
@@ -399,7 +399,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-14 04:51:15.770280",
+ "modified": "2023-04-14 07:22:48.374241",
  "modified_by": "Administrator",
  "module": "Emd Management",
  "name": "EMD",
