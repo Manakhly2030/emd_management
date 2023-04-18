@@ -12,6 +12,7 @@
   "customer_name",
   "deposit_account",
   "bank_account",
+  "currency",
   "amount",
   "extra_charges",
   "expense_account",
@@ -147,6 +148,7 @@
    "fieldname": "return_account",
    "fieldtype": "Link",
    "label": "Return Account",
+   "mandatory_depends_on": "eval:doc.returned == 1",
    "options": "Account"
   },
   {
@@ -154,7 +156,8 @@
    "depends_on": "eval:doc.returned == 1",
    "fieldname": "interest_amount",
    "fieldtype": "Currency",
-   "label": "Interest Amount"
+   "label": "Interest Amount",
+   "options": "Company:company:default_currency"
   },
   {
    "allow_on_submit": 1,
@@ -191,22 +194,22 @@
    "fieldname": "tender_name",
    "fieldtype": "Data",
    "label": "Tender Name",
-   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
-   "no_copy": 1
+   "no_copy": 1,
+   "reqd": 1
   },
   {
    "fieldname": "tender_no",
    "fieldtype": "Data",
    "label": "Tender No",
-   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
-   "no_copy": 1
+   "no_copy": 1,
+   "reqd": 1
   },
   {
    "fieldname": "payment_mode",
    "fieldtype": "Data",
    "label": "Payment Mode",
-   "mandatory_depends_on": "eval:doc.send_weekly_reminder==1",
-   "no_copy": 1
+   "no_copy": 1,
+   "reqd": 1
   },
   {
    "default": "Today",
@@ -226,7 +229,8 @@
    "depends_on": "eval:doc.returned == 1",
    "fieldname": "return_date",
    "fieldtype": "Date",
-   "label": "Return Date"
+   "label": "Return Date",
+   "mandatory_depends_on": "eval:doc.returned == 1"
   },
   {
    "fieldname": "address_and_contact",
@@ -329,16 +333,19 @@
    "fieldname": "write_off_account",
    "fieldtype": "Link",
    "label": "Write Off Account",
+   "mandatory_depends_on": "eval:doc.forfeited==1",
    "options": "Account"
   },
   {
    "allow_on_submit": 1,
    "default": "0",
+   "depends_on": "eval: doc.status == \"Due\"",
    "fieldname": "send_weekly_reminder",
    "fieldtype": "Check",
    "label": "Send Weekly Reminder"
   },
   {
+   "allow_on_submit": 1,
    "depends_on": "eval:doc.send_weekly_reminder==1",
    "fieldname": "cc_to",
    "fieldtype": "Data",
@@ -346,6 +353,7 @@
   },
   {
    "allow_on_submit": 1,
+   "depends_on": "eval:doc.send_weekly_reminder == 1",
    "fieldname": "receipient",
    "fieldtype": "Data",
    "label": "Receipient",
@@ -353,6 +361,7 @@
   },
   {
    "allow_on_submit": 1,
+   "depends_on": "eval:doc.send_weekly_reminder == 1",
    "fieldname": "invitation_message",
    "fieldtype": "Text Editor",
    "label": "Reminder Message"
@@ -368,7 +377,6 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.send_weekly_reminder==1",
    "fieldname": "description_section",
    "fieldtype": "Section Break",
    "label": "Reminder Setup"
@@ -391,15 +399,25 @@
   },
   {
    "allow_on_submit": 1,
+   "depends_on": "eval:doc.send_weekly_reminder == 1",
    "fieldname": "email_template",
    "fieldtype": "Link",
    "label": "Email Template",
    "options": "Email Template"
+  },
+  {
+   "default": "currency",
+   "fetch_from": "company.default_currency",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "label": "Currency",
+   "options": "Currency",
+   "read_only": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2023-04-14 07:22:48.374241",
+ "modified": "2023-04-15 13:09:05.233826",
  "modified_by": "Administrator",
  "module": "Emd Management",
  "name": "EMD",

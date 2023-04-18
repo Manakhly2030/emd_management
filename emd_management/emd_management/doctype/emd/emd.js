@@ -10,6 +10,7 @@ frappe.ui.form.on('EMD', {
 	},
 	send_weekly_reminder: function(frm){
 		cur_frm.set_value("receipient", frm.doc.contact_email)
+		cur_frm.set_value("email_template", "EMD Reminder")
 	},
 	cancel_return: function(frm){
 		frm.call({
@@ -17,6 +18,20 @@ frappe.ui.form.on('EMD', {
 			method: "cancel_return",
 			callback: () => {
 				window.location.reload();
+			}
+		})
+	},
+	mode_of_payment: function(frm){
+		frappe.call({
+			// doc: frm.doc.mode_of_payment,
+			method: "emd_management.emd_management.doctype.emd.emd.get_bank_account",
+			args: {
+				mode_of_payment: frm.doc.mode_of_payment 
+			},
+			callback: function(r){
+				if(r.message){
+					cur_frm.set_value("bank_account", r.message)
+				}
 			}
 		})
 	},
@@ -223,7 +238,8 @@ cur_frm.fields_dict.return_account.get_query = function(doc) {
 return {
 	filters: {
 		"company": doc.company,
-		"account_type": "Bank"
+		"account_type": "Bank",
+		"is_group": 0
 	}
 }
 };

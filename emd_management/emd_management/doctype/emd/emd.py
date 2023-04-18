@@ -14,13 +14,13 @@ class EMD(Document):
     def set_status(self):
         if not self.bank_account and self.is_opening=="No":
             frappe.throw("Bank Account is Mandatory")
-        if not self.due_date:
-            frappe.throw("Due Date is Mandatory.")
+        
 
+        # frappe.throw(str(self.returned) + " - " + str(self.forfeited) + " - " + str(self.due_date) + " - " + str(getdate()) + " - " + str(self.due_date >= str(getdate())))
         if (
             not self.returned
             and not self.forfeited
-            and self.due_date >= str(getdate())
+            and not self.due_date < str(getdate())
         ):
             self.db_set("status", "Paid")
             # self.status = "Paid" Commented By Sahil
@@ -33,6 +33,12 @@ class EMD(Document):
         #     self.status = "Forfeited"
 
     def on_submit(self):
+        if not self.due_date:
+            frappe.throw("Due Date is Mandatory.")
+        if self.posting_date > self.due_date:
+            frappe.throw("Due date cannot not be before posting date.")
+        if self.returned and self.forfeited:
+            frappe.throw("Return and Forfeited both not allowed. You can do entry against the return or forfeited. ")
         self.set_status()
         jv = frappe.new_doc("Journal Entry")
         jv.posting_date = self.posting_date
@@ -82,25 +88,36 @@ class EMD(Document):
     @frappe.whitelist()
     def cancel_return(self):
         if self.return_journal_entry:
-            frappe.get_doc("Journal Entry", self.return_journal_entry).cancel()
+            jv = frappe.get_doc("Journal Entry", self.return_journal_entry)
+            self.db_set('return_journal_entry', None)
+            jv.cancel()
             # jv.cancel() Commented By Sahil
             self.db_set('returned', 0)
             self.db_set('return_account', None)
             self.db_set('return_date', None)
-            self.db_set('return_journal_entry', None)
-            self.db_set("status", "Paid")
+            if self.due_date < str(getdate()):
+                self.db_set("status", "Due")
+            else: 
+                self.db_set("status", "Paid")
         
     @frappe.whitelist()
     def cancel_forfeited(self):
         if self.return_forfeited_entry:
-            frappe.get_doc("Journal Entry", self.return_forfeited_entry).cancel()
+            jv = frappe.get_doc("Journal Entry", self.return_forfeited_entry)
+            self.db_set('return_forfeited_entry', None)
+            jv.cancel()
             self.db_set('forfeited', 0)
             self.db_set('write_off_account', None)
-            self.db_set('return_forfeited_entry', None)
-            self.db_set("status", "Paid")
+            if self.due_date < str(getdate()):
+                self.db_set("status", "Due")
+            else: 
+                self.db_set("status", "Paid")
+
             # jv.cancel() Commented By Sahil
 
     def on_update_after_submit(self):
+        if self.returned and self.forfeited:
+            frappe.throw("Return and Forfeited both not allowed. You can do entry against the return or forfeited. ")
         if self.returned == 1 and not self.return_journal_entry:
             jv = frappe.new_doc("Journal Entry")
             jv.posting_date = self.return_date
@@ -144,8 +161,14 @@ class EMD(Document):
             self.db_set("status", "Refunded")
         elif self.forfeited == 1:
             self.db_set("status", "Forfeited")
-        else:
+        elif (
+            not self.returned
+            and not self.forfeited
+            and not self.due_date < str(getdate())
+        ):
             self.db_set("status", "Paid")
+        else:
+            self.db_set("status", "Due")
 
 
         if self.forfeited==1:
@@ -183,8 +206,14 @@ class EMD(Document):
             self.db_set("status", "Forfeited")
         elif self.returned == 1:
             self.db_set("status", "Refunded")
-        else:
+        elif (
+            not self.returned
+            and not self.forfeited
+            and not self.due_date < str(getdate())
+        ):
             self.db_set("status", "Paid")
+        else:
+            self.db_set("status", "Due")
             
     def on_cancel(self):
         se = frappe.get_doc("Journal Entry", self.journal_entry)
@@ -233,10 +262,16 @@ def send_emails():
 # 	st.save()
         
 def change_status_on_due(self):
-    if self.due_date >= str(getdate()):
+    if self.due_date < str(getdate()):
         self.status ="Due"
 
-
+@frappe.whitelist()
+def get_bank_account(mode_of_payment):
+    # if self.mode_of_payment:
+    doc = frappe.get_doc("Mode of Payment", mode_of_payment)
+    for row in doc.accounts:
+        bank = row.default_account
+    return bank
 
 def validate(self,method):
     if self.is_opening=="Yes":
