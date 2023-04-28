@@ -1,1 +1,2 @@
 emd_management.emd_management.patches.create_email_template_for_emd
+emd_management.emd_management.patches.voucher_options
