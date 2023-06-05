@@ -49,7 +49,7 @@ System will send weekly reminders with selected text till the time EMD is not re
 
 ## Documentation
 
-Complete documentation for EMD Management [here](https://finbyz.tech/emd_management)
+Complete documentation for EMD Management [here](https://finbyz.tech/emd-management-erpnext)
 
 ## License
 
